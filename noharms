@@ -1,0 +1,11 @@
+CaseAction
+| extend d=parse_json(actions)
+| extend d1=parse_json(subjectOwners)
+//| extend Action = tostring(d[0]["action"])
+| extend triggerRuleName = tostring(d[0]["triggerRuleName"])
+| extend UserID = tostring(d1[0]["userId"])
+| summarize NumberOfOccurences = count(UserID) by UserID, triggerRuleName
+| extend RepeatOffenderIndex = case(NumberOfOccurences <= 2, "Novice Offender", 
+                               NumberOfOccurences <= 5, "Amateur Offender", 
+                               NumberOfOccurences <= 10, "Regular Offender",
+                                "Dennis the Menace")
